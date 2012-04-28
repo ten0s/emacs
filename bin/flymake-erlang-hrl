@@ -83,6 +83,7 @@ print_warnings(FileName, [{_FileName, Warnings} | _]) ->
 
 %% skip warnings that might occur in pure header files.
 skip_warning({_, _, {unused_record, _}}) -> true;
+skip_warning({_, _, {unused_type, _}}) -> true;
 skip_warning(_) -> false.
 
 %% the `file:format' returns the error description in the `line: description' format.
