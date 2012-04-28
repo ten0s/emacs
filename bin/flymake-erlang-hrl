@@ -58,7 +58,7 @@ deps_ebins(DepsDir) ->
 
 %% ignore the fake name, skip errors that are ok in header files,
 %% and fix line numbers due to the `-module' definition.
-print_errors(_, []) -> void;
+print_errors(_, []) -> ok;
 print_errors(FileName, [{_FileName, Errors} | _]) ->
 	FilteredErrors = lists:filter(fun(E) -> not skip_error(E) end, Errors),
 	lists:foreach(
@@ -72,7 +72,7 @@ skip_error({_, _, {spec_fun_undefined, _}}) -> true;
 skip_error(_) -> false.
 
 %% ignore the fake name and fixe line numbers due to the `-module' definition.
-print_warnings(_, []) -> void;
+print_warnings(_, []) -> ok;
 print_warnings(FileName, [{_FileName, Warnings} | _]) ->
 	FilteredWarnings = lists:filter(fun(W) -> not skip_warning(W) end, Warnings),
 	lists:foreach(
