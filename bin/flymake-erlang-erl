@@ -1,0 +1,24 @@
+#!/usr/bin/env escript
+-export([main/1]).
+
+main([FileName]) ->
+	% better use rebar config first to look at dependency path
+	% if rebar config isn't found then use wildcards
+	ProjectEbins = deps_ebins("../.."),
+	DepsEbins = deps_ebins("../../../deps"),
+	%these below seems to work but a little slower.
+	%ProjectEbins = filelib:wildcard("../../*/ebin/"),
+	%DepsEbins = filelib:wildcard("../../../deps/*/ebin/"),
+	code:add_paths(ProjectEbins ++ DepsEbins),
+	compile:file(FileName, [warn_obsolete_guard, warn_unused_import,
+		warn_shadow_vars, warn_export_vars, strong_validation, report,
+		{i, "../include"}, {i, "../.."}, {i, "../../../deps"}]).
+
+deps_ebins(DepsDir) ->
+	case filelib:is_dir(DepsDir) of
+		false ->
+			[];
+		true ->
+			{ok, Dirs} = file:list_dir(DepsDir),
+			[Ebin || Dir <- Dirs, begin Ebin = DepsDir ++ "/" ++ Dir ++ "/ebin", filelib:is_dir(Ebin) end]
+	end.

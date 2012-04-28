@@ -1,0 +1,79 @@
+#!/usr/bin/env escript
+-export([main/1]).
+
+main([FileName]) ->
+	case file:read_file(FileName) of
+		{ok, HrlContent} ->
+			%% preced with module name, so now this is a real erlang module.
+			ErlContent = <<
+				<<"-module(test_inc).\n">>/binary,
+				HrlContent/binary
+			>>,
+			%% append erlang extention, so the `compile:file' won't complain.
+			NewFileName = FileName ++ ".erl",
+			case file:write_file(NewFileName, ErlContent) of
+				ok ->
+					% better use rebar config first to look at dependency path
+					% if rebar config isn't found then use wildcards
+					ProjectEbins = deps_ebins("../.."),
+					DepsEbins = deps_ebins("../../../deps"),
+					%these below seems to work but a little slower.
+					%ProjectEbins = filelib:wildcard("../../*/ebin/"),
+					%DepsEbins = filelib:wildcard("../../../deps/*/ebin/"),
+					code:add_paths(ProjectEbins ++ DepsEbins),
+					CompileResult = compile:file(NewFileName, [
+						warn_obsolete_guard, warn_unused_import, warn_shadow_vars,
+						warn_export_vars, strong_validation, return_errors,
+						{i, "."}, {i, "../.."}, {i, "../../../deps"}]),
+					file:delete(NewFileName),
+					io:format("~p~n", [CompileResult]),
+					case CompileResult of
+						{ok, _ModuleName} ->
+							ok;
+						{ok, _ModuleName, _Warnings} ->
+							ok;
+						{ok, _ModuleName, _Binary} ->
+							ok;
+						{ok, _ModuleName, _Binary, _Warnings} ->
+							ok;
+						{error, Errors, _Warnings} ->
+							print_errors(FileName, Errors),
+							error
+					end;
+				{error, Errors} ->
+					print_errors(FileName, Errors),
+					error
+			end;
+		{error, Errors} ->
+			print_errors(FileName, Errors),
+			error
+	end.
+
+deps_ebins(DepsDir) ->
+	case filelib:is_dir(DepsDir) of
+		false ->
+			[];
+		true ->
+			{ok, Dirs} = file:list_dir(DepsDir),
+			[Ebin || Dir <- Dirs, begin Ebin = DepsDir ++ "/" ++ Dir ++ "/ebin", filelib:is_dir(Ebin) end]
+	end.
+
+%%% ignore the fake name and decrease the line number by 1
+%%% to take into account the module definition.
+print_errors(FileName, [{_FileName, Errors} | _]) ->
+	FilteredErrors = lists:filter(fun(E) -> not is_skipped_error(E) end, Errors),
+	lists:foreach(
+		fun({none, Mod, Term}) ->
+				Error = {1, Mod, Term},
+				Descr = file:format_error(Error),
+				io:format("~s:~s~n", [FileName, Descr]);
+			({Line, Mod, Term}) ->
+				Error = {Line - 1, Mod, Term},
+				Descr = file:format_error(Error),
+				io:format("~s:~s~n", [FileName, Descr])
+		end,
+		FilteredErrors).
+
+is_skipped_error({_, _, {spec_fun_undefined, _}}) -> true;
+is_skipped_error(_) -> false.
+
