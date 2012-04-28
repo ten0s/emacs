@@ -23,21 +23,19 @@ main([FileName]) ->
 					code:add_paths(ProjectEbins ++ DepsEbins),
 					CompileResult = compile:file(NewFileName, [
 						warn_obsolete_guard, warn_unused_import, warn_shadow_vars,
-						warn_export_vars, strong_validation, return_errors,
+						warn_export_vars, strong_validation, return_errors, return_warnings,
 						{i, "."}, {i, "../.."}, {i, "../../../deps"}]),
 					file:delete(NewFileName),
 					io:format("~p~n", [CompileResult]),
 					case CompileResult of
 						{ok, _ModuleName} ->
 							ok;
-						{ok, _ModuleName, _Warnings} ->
+						{ok, _ModuleName, Warnings} ->
+							print_warnings(FileName, Warnings),
 							ok;
-						{ok, _ModuleName, _Binary} ->
-							ok;
-						{ok, _ModuleName, _Binary, _Warnings} ->
-							ok;
-						{error, Errors, _Warnings} ->
+						{error, Errors, Warnings} ->
 							print_errors(FileName, Errors),
+							print_warnings(FileName, Warnings),
 							error
 					end;
 				{error, Errors} ->
@@ -58,22 +56,56 @@ deps_ebins(DepsDir) ->
 			[Ebin || Dir <- Dirs, begin Ebin = DepsDir ++ "/" ++ Dir ++ "/ebin", filelib:is_dir(Ebin) end]
 	end.
 
-%%% ignore the fake name and decrease the line number by 1
-%%% to take into account the module definition.
+%% ignore the fake name, skip errors that are ok in header files,
+%% and fix line numbers due to the `-module' definition.
+print_errors(_, []) -> void;
 print_errors(FileName, [{_FileName, Errors} | _]) ->
-	FilteredErrors = lists:filter(fun(E) -> not is_skipped_error(E) end, Errors),
+	FilteredErrors = lists:filter(fun(E) -> not skip_error(E) end, Errors),
 	lists:foreach(
-		fun({none, Mod, Term}) ->
-				Error = {1, Mod, Term},
-				Descr = file:format_error(Error),
-				io:format("~s:~s~n", [FileName, Descr]);
-			({Line, Mod, Term}) ->
-				Error = {Line - 1, Mod, Term},
-				Descr = file:format_error(Error),
-				io:format("~s:~s~n", [FileName, Descr])
+		fun(Error) ->
+			print_error(FileName, Error)
 		end,
 		FilteredErrors).
 
-is_skipped_error({_, _, {spec_fun_undefined, _}}) -> true;
-is_skipped_error(_) -> false.
+%% skip errors that might occur in pure header files.
+skip_error({_, _, {spec_fun_undefined, _}}) -> true;
+skip_error(_) -> false.
 
+%% ignore the fake name and fixe line numbers due to the `-module' definition.
+print_warnings(_, []) -> void;
+print_warnings(FileName, [{_FileName, Warnings} | _]) ->
+	FilteredWarnings = lists:filter(fun(W) -> not skip_warning(W) end, Warnings),
+	lists:foreach(
+		fun(Warning) ->
+			print_warning(FileName, Warning)
+		end,
+		FilteredWarnings).
+
+%% skip warnings that might occur in pure header files.
+skip_warning({_, _, {unused_record, _}}) -> true;
+skip_warning(_) -> false.
+
+%% the `file:format' returns the error description in the `line: description' format.
+%% here only the description is returned.
+error_description(Error) ->
+	tl(lists:dropwhile(fun(C) -> C =/= 32 end, file:format_error(Error))).
+
+%% appropriately fix line numbers due to either absence of the line number
+%% or the `-module' definition.
+print_error(FileName, {none, _Mod, _Term} = Error) ->
+	Description = error_description(Error),
+	print_error(FileName, 1, Description);
+print_error(FileName, {Line, _Mod, _Term} = Error) ->
+	Description = error_description(Error),
+	print_error(FileName, Line - 1, Description).
+
+print_error(FileName, Line, Description) ->
+	io:format("~s:~p: ~s~n", [FileName, Line, Description]).
+
+%% appropriately fix line numbers due to the `-module' definition.
+print_warning(FileName, {Line, _Mod, _Term} = Error) ->
+	Description = error_description(Error),
+	print_warning(FileName, Line - 1, Description).
+
+print_warning(FileName, Line, Description) ->
+	io:format("~s:~p: Warning: ~s~n", [FileName, Line, Description]).
