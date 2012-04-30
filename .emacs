@@ -46,6 +46,11 @@
 ; delete-selection-mode
 
 ;;;----------------------------------------
+;;; extra packages path
+;;;----------------------------------------
+(add-to-list 'load-path "~/.emacs.d/")
+
+;;;----------------------------------------
 ;;; erlang-mode
 ;;;----------------------------------------
 
@@ -96,6 +101,7 @@
 ;;;----------------------------------------
 
 (require 'flymake)
+(require 'flymake-cursor) ; http://www.emacswiki.org/emacs/FlymakeCursor
 (setq flymake-log-level 3)
 
 (defun flymake-compile-script-path (path)
