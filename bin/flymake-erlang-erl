@@ -2,17 +2,33 @@
 -export([main/1]).
 
 main([FileName]) ->
-	% better use rebar config first to look at dependency path
-	% if rebar config isn't found then use wildcards
+	% better to use rebar config first to look at dependency path
+	% if rebar config isn't found then the project the most
+	% probably is fairly simple and use wildcards.
 	ProjectEbins = deps_ebins("../.."),
 	DepsEbins = deps_ebins("../../../deps"),
 	%these below seems to work but a little slower.
 	%ProjectEbins = filelib:wildcard("../../*/ebin/"),
 	%DepsEbins = filelib:wildcard("../../../deps/*/ebin/"),
 	code:add_paths(ProjectEbins ++ DepsEbins),
-	compile:file(FileName, [warn_obsolete_guard, warn_unused_import,
-		warn_shadow_vars, warn_export_vars, strong_validation, report,
-		{i, "../include"}, {i, "../.."}, {i, "../../../deps"}]).
+	CompileResult = compile:file(FileName, [
+		strong_validation,
+		{warn_format, 2},
+		warn_export_all,
+		warn_export_vars,
+		warn_shadow_vars,
+		warn_obsolete_guard,
+		warn_unused_import,
+		warn_unused_function,
+		warn_unused_variable,
+		warn_deprecated_function,
+		return_errors,
+		return_warnings,
+		report_errors,
+		report_warnings,
+		{i, "../include"}, {i, "../.."}, {i, "../../../deps"}]),
+	io:format("~p~n", [CompileResult]),
+	CompileResult.
 
 deps_ebins(DepsDir) ->
 	case filelib:is_dir(DepsDir) of

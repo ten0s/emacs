@@ -4,17 +4,18 @@
 main([FileName]) ->
 	case file:read_file(FileName) of
 		{ok, HrlContent} ->
-			%% preced with module name, so now this is a real erlang module.
+			%% precede with the module name, so now this is a real erlang module.
 			ErlContent = <<
 				<<"-module(test_inc).\n">>/binary,
 				HrlContent/binary
 			>>,
-			%% append erlang extention, so the `compile:file' won't complain.
+			%% append an erlang extention, so the `compile:file' won't complain.
 			NewFileName = FileName ++ ".erl",
 			case file:write_file(NewFileName, ErlContent) of
 				ok ->
-					% better use rebar config first to look at dependency path
-					% if rebar config isn't found then use wildcards
+					% better to use rebar config first to look at dependency path
+					% if rebar config isn't found then the project the most
+					% probably is fairly simple and use wildcards.
 					ProjectEbins = deps_ebins("../.."),
 					DepsEbins = deps_ebins("../../../deps"),
 					%these below seems to work but a little slower.
@@ -22,8 +23,18 @@ main([FileName]) ->
 					%DepsEbins = filelib:wildcard("../../../deps/*/ebin/"),
 					code:add_paths(ProjectEbins ++ DepsEbins),
 					CompileResult = compile:file(NewFileName, [
-						warn_obsolete_guard, warn_unused_import, warn_shadow_vars,
-						warn_export_vars, strong_validation, return_errors, return_warnings,
+						strong_validation,
+						{warn_format, 2},
+						warn_export_all,
+						warn_export_vars,
+						warn_shadow_vars,
+						warn_obsolete_guard,
+						warn_unused_import,
+						warn_unused_function,
+						warn_unused_variable,
+						warn_deprecated_function,
+						return_errors,
+						return_warnings,
 						{i, "."}, {i, "../.."}, {i, "../../../deps"}]),
 					file:delete(NewFileName),
 					io:format("~p~n", [CompileResult]),
@@ -87,7 +98,7 @@ skip_warning({_, _, {unused_type, _}}) -> true;
 skip_warning(_) -> false.
 
 %% the `file:format' returns the error description in the `line: description' format.
-%% here only the description is returned.
+%% here only the `description' is returned.
 error_description(Error) ->
 	tl(lists:dropwhile(fun(C) -> C =/= 32 end, file:format_error(Error))).
 
