@@ -11,6 +11,8 @@
 ;(delete-other-windows)
 (setq line-number-mode t)
 (setq column-number-mode t)
+;; Make all "yes or no" prompts show "y or n" instead
+(fset 'yes-or-no-p 'y-or-n-p)
 
 (setq show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -44,13 +46,11 @@
 ; delete-selection-mode
 
 ;;;----------------------------------------
-;;; configure erlang-mode
-;;; https://github.com/andrzejsliwa/.emacs.d/blob/master/init.el
+;;; erlang-mode
 ;;;----------------------------------------
 
 (setq erlang-root-dir "/usr/local/lib/erlang")
 (setq load-path (cons (car (file-expand-wildcards "/usr/local/lib/erlang/lib/tools-*/emacs")) load-path))
-;(setq load-path (cons "/usr/local/lib/erlang/lib/tools-2.6.6.5/emacs" load-path)) ;
 (setq erlang-man-root-dir "/usr/local/lib/erlang/man")
 (setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
 (setq erlang-electric-commands nil)
@@ -66,8 +66,8 @@
 
 	 (imenu-add-to-menubar "Imenu")
 
-	 (local-set-key (kbd "C-c C-m m") 'erlang-man-module)
-	 (local-set-key (kbd "C-c C-m f") 'erlang-man-function)))
+	 (local-set-key (kbd "C-c C-m m") 'erlang-man-module) ; M-F1
+	 (local-set-key (kbd "C-c C-m f") 'erlang-man-function))); M-F2
 
 ; define name and cookie for internally loaded erlang shell.
 (setq inferior-erlang-machine-options
@@ -92,9 +92,7 @@
 (setq erlang-compile-outdir "../ebin")
 
 ;;;----------------------------------------
-;;; configure flymake
-;;; http://erlware.blogspot.com/2010/09/flymake-and-erlang.html
-;;; http://www.youtube.com/watch?v=Zy1dF5suN5E
+;;; flymake
 ;;;----------------------------------------
 
 (require 'flymake)
@@ -119,9 +117,9 @@
 
 (add-hook 'erlang-mode-hook
   '(lambda()
-	 (local-set-key (kbd "C-c C-f d") 'flymake-display-err-menu-for-current-line)
-	 (local-set-key (kbd "C-c C-f n") 'flymake-goto-next-error)
-	 (local-set-key (kbd "C-c C-f p") 'flymake-goto-prev-error)
+	 (local-set-key (kbd "C-c C-f d") 'flymake-display-err-menu-for-current-line) ; M-F1
+	 (local-set-key (kbd "C-c C-f n") 'flymake-goto-next-error) ; F3
+	 (local-set-key (kbd "C-c C-f p") 'flymake-goto-prev-error) ; M-F3
 
 	 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-erl))
 	 (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-erlang-hrl))
@@ -149,7 +147,7 @@ check on newline and when there are no changes)."
 (erlang-flymake-only-on-save)
 
 ;;;----------------------------------------
-;;; configure wrangler
+;;; wrangler
 ;;; http://www.cs.kent.ac.uk/projects/wrangler/Home.html
 ;;;----------------------------------------
 
@@ -170,7 +168,7 @@ check on newline and when there are no changes)."
  )
 
 ;;;----------------------------------------
-;;; configure scheme-mode
+;;; scheme-mode
 ;;; http://www.cs.rpi.edu/academics/courses/fall05/ai/scheme/starting.html
 ;;;----------------------------------------
 
