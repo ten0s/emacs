@@ -33,6 +33,7 @@ main([FileName]) ->
 						warn_unused_function,
 						warn_unused_variable,
 						warn_deprecated_function,
+						warn_missing_spec,
 						return_errors,
 						return_warnings,
 						{i, "."}, {i, "../.."}, {i, "../../../deps"}]),
