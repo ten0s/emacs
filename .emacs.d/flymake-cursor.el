@@ -131,7 +131,7 @@ second, does the flymake error message (if any) get displayed.
   (if (flyc/-get-error-at-point)
 	  (setq flyc--e-display-timer
 			(run-at-time "0.9 sec" nil 'flyc/show-error-now))
-	(setq flyc--e-display-timer nil))
+	(setq flyc--e-display-timer nil)))
 
 
 ;;;###autoload
