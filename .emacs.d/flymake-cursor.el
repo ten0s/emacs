@@ -52,6 +52,13 @@
 ;; You can, of course, put that in an eval-after-load clause.
 ;;
 ;; -------------------------------------------------------
+
+;;
+;; Update 2012-05-01 by Dmitry Klionsky
+;; --
+;; Removed showing the stored error. This didn't work correctly for me.
+;; Now only the actual error is shown, if one.
+;;
 ;;
 ;; Update 2012-03-06 by Donald Curtis
 ;; --
@@ -61,9 +68,6 @@
 
 
 (require 'cl)
-
-(defvar flyc--e-at-point nil
-  "Error at point, after last command")
 
 (defvar flyc--e-display-timer nil
   "A timer; when it fires, it displays the stored error message.")
@@ -78,14 +82,14 @@ message to display, so there is one ;)"
         (t ;; could not compile error
          (format "compile error, problem on line %s" (flymake-ler-line errore)))))
 
-(defun flyc/show-stored-error-now ()
-  "Displays the stored error in the minibuffer."
+(defun flyc/show-error-now ()
+  "Displays the error, if one, in the minibuffer."
   (interactive)
-  (if flyc--e-at-point
-      (progn
-        (message "%s" (flyc/maybe-fixup-message flyc--e-at-point))
-        (setq flyc--e-display-timer nil))))
-
+  (let ((error-at-point (flyc/-get-error-at-point)))
+    (if error-at-point
+        (progn
+		  (message "%s" (flyc/maybe-fixup-message error-at-point))
+		  (setq flyc--e-display-timer nil)))))
 
 (defun flyc/-get-error-at-point ()
   "Gets the first flymake error on the line at point."
@@ -106,11 +110,7 @@ the error message in the  minibuffer."
       (progn
         (cancel-timer flyc--e-display-timer)
         (setq flyc--e-display-timer nil)))
-  (let ((error-at-point (flyc/-get-error-at-point)))
-    (if error-at-point
-        (progn
-          (setq flyc--e-at-point error-at-point)
-          (flyc/show-stored-error-now)))))
+  (flyc/show-error-now))
 
 
 ;;;###autoload
@@ -128,13 +128,10 @@ second, does the flymake error message (if any) get displayed.
   (if flyc--e-display-timer
       (cancel-timer flyc--e-display-timer))
 
-  (let ((error-at-point (flyc/-get-error-at-point)))
-    (if error-at-point
-        (setq flyc--e-at-point error-at-point
-              flyc--e-display-timer
-              (run-at-time "0.9 sec" nil 'flyc/show-stored-error-now))
-      (setq flyc--e-at-point nil
-            flyc--e-display-timer nil))))
+  (if (flyc/-get-error-at-point)
+	  (setq flyc--e-display-timer
+			(run-at-time "0.9 sec" nil 'flyc/show-error-now))
+	(setq flyc--e-display-timer nil))
 
 
 ;;;###autoload
