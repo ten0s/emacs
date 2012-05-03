@@ -38,7 +38,6 @@ main([FileName]) ->
 						return_warnings,
 						{i, "."}, {i, "../.."}, {i, "../../../deps"}]),
 					file:delete(NewFileName),
-					io:format("~p~n", [CompileResult]),
 					case CompileResult of
 						{ok, _ModuleName} ->
 							ok;
@@ -49,7 +48,8 @@ main([FileName]) ->
 							print_errors(FileName, Errors),
 							print_warnings(FileName, Warnings),
 							error
-					end;
+					end,
+					io:format("~p~n", [CompileResult]),
 				{error, Errors} ->
 					print_errors(FileName, Errors),
 					error
@@ -58,6 +58,27 @@ main([FileName]) ->
 			print_errors(FileName, Errors),
 			error
 	end.
+
+%%%
+%%% Specific
+%%%
+
+%% skip errors that might occur in pure header files.
+skip_error({_, _, {spec_fun_undefined, _}}) -> true;
+skip_error(_) -> false.
+
+%% skip warnings that might occur in pure header files.
+skip_warning({_, _, {unused_record, _}}) -> true;
+skip_warning({_, _, {unused_type, _}}) -> true;
+skip_warning(_) -> false.
+
+%% appropriately fix line numbers due to the `-module' definition.
+fix_line_number(none) -> 1;
+fix_line_number(Line) -> Line - 1.
+
+%%%
+%%% Generic
+%%%
 
 deps_ebins(DepsDir) ->
 	case filelib:is_dir(DepsDir) of
@@ -68,8 +89,11 @@ deps_ebins(DepsDir) ->
 			[Ebin || Dir <- Dirs, begin Ebin = DepsDir ++ "/" ++ Dir ++ "/ebin", filelib:is_dir(Ebin) end]
 	end.
 
-%% ignore the fake name, skip errors that are ok in header files,
-%% and fix line numbers due to the `-module' definition.
+%% the `file:format_error' returns the error description in the `line: description' format.
+%% here only the `description' is returned.
+error_description(Error) ->
+	tl(lists:dropwhile(fun(C) -> C =/= 32 end, file:format_error(Error))).
+
 print_errors(_, []) -> ok;
 print_errors(FileName, [{_FileName, Errors} | _]) ->
 	FilteredErrors = lists:filter(fun(E) -> not skip_error(E) end, Errors),
@@ -79,11 +103,14 @@ print_errors(FileName, [{_FileName, Errors} | _]) ->
 		end,
 		FilteredErrors).
 
-%% skip errors that might occur in pure header files.
-skip_error({_, _, {spec_fun_undefined, _}}) -> true;
-skip_error(_) -> false.
+print_error(FileName, {Line, _Mod, _Term} = Error) ->
+	Description = error_description(Error),
+	FixedLine = fix_line_number(Line),
+	print_error(FileName, FixedLine, Description).
 
-%% ignore the fake name and fixe line numbers due to the `-module' definition.
+print_error(FileName, Line, Description) ->
+	io:format("~s:~p: ~s~n", [FileName, Line, Description]).
+
 print_warnings(_, []) -> ok;
 print_warnings(FileName, [{_FileName, Warnings} | _]) ->
 	FilteredWarnings = lists:filter(fun(W) -> not skip_warning(W) end, Warnings),
@@ -93,32 +120,10 @@ print_warnings(FileName, [{_FileName, Warnings} | _]) ->
 		end,
 		FilteredWarnings).
 
-%% skip warnings that might occur in pure header files.
-skip_warning({_, _, {unused_record, _}}) -> true;
-skip_warning({_, _, {unused_type, _}}) -> true;
-skip_warning(_) -> false.
-
-%% the `file:format' returns the error description in the `line: description' format.
-%% here only the `description' is returned.
-error_description(Error) ->
-	tl(lists:dropwhile(fun(C) -> C =/= 32 end, file:format_error(Error))).
-
-%% appropriately fix line numbers due to either absence of the line number
-%% or the `-module' definition.
-print_error(FileName, {none, _Mod, _Term} = Error) ->
-	Description = error_description(Error),
-	print_error(FileName, 1, Description);
-print_error(FileName, {Line, _Mod, _Term} = Error) ->
-	Description = error_description(Error),
-	print_error(FileName, Line - 1, Description).
-
-print_error(FileName, Line, Description) ->
-	io:format("~s:~p: ~s~n", [FileName, Line, Description]).
-
-%% appropriately fix line numbers due to the `-module' definition.
 print_warning(FileName, {Line, _Mod, _Term} = Error) ->
 	Description = error_description(Error),
-	print_warning(FileName, Line - 1, Description).
+	FixedLine = fix_line_number(Line),
+	print_warning(FileName, FixedLine, Description).
 
 print_warning(FileName, Line, Description) ->
-	io:format("~s:~p: Warning: ~s~n", [FileName, Line, Description]).
+	io:format("~s:~p: warning: ~s~n", [FileName, Line, Description]).

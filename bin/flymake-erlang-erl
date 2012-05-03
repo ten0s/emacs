@@ -25,11 +25,34 @@ main([FileName]) ->
 		warn_missing_spec,
 		return_errors,
 		return_warnings,
-		report_errors,
-		report_warnings,
 		{i, "../include"}, {i, "../.."}, {i, "../../../deps"}]),
-	io:format("~p~n", [CompileResult]),
-	CompileResult.
+		case CompileResult of
+			{ok, _ModuleName} ->
+				ok;
+			{ok, _ModuleName, Warnings} ->
+				print_warnings(FileName, Warnings),
+				ok;
+			{error, Errors, Warnings} ->
+				print_errors(FileName, Errors),
+				print_warnings(FileName, Warnings),
+				error
+		end,
+		io:format("~p~n", [CompileResult]).
+
+%%%
+%%% Specific
+%%%
+
+skip_error(_) -> false.
+
+skip_warning(_) -> false.
+
+fix_line_number(none) -> 1;
+fix_line_number(Line) -> Line.
+
+%%%
+%%% Generic
+%%%
 
 deps_ebins(DepsDir) ->
 	case filelib:is_dir(DepsDir) of
@@ -39,3 +62,42 @@ deps_ebins(DepsDir) ->
 			{ok, Dirs} = file:list_dir(DepsDir),
 			[Ebin || Dir <- Dirs, begin Ebin = DepsDir ++ "/" ++ Dir ++ "/ebin", filelib:is_dir(Ebin) end]
 	end.
+
+%% the `file:format_error' returns the error description in the `line: description' format.
+%% here only the `description' is returned.
+error_description(Error) ->
+	tl(lists:dropwhile(fun(C) -> C =/= 32 end, file:format_error(Error))).
+
+print_errors(_, []) -> ok;
+print_errors(FileName, [{_FileName, Errors} | _]) ->
+	FilteredErrors = lists:filter(fun(E) -> not skip_error(E) end, Errors),
+	lists:foreach(
+		fun(Error) ->
+			print_error(FileName, Error)
+		end,
+		FilteredErrors).
+
+print_error(FileName, {Line, _Mod, _Term} = Error) ->
+	Description = error_description(Error),
+	FixedLine = fix_line_number(Line),
+	print_error(FileName, FixedLine, Description).
+
+print_error(FileName, Line, Description) ->
+	io:format("~s:~p: ~s~n", [FileName, Line, Description]).
+
+print_warnings(_, []) -> ok;
+print_warnings(FileName, [{_FileName, Warnings} | _]) ->
+	FilteredWarnings = lists:filter(fun(W) -> not skip_warning(W) end, Warnings),
+	lists:foreach(
+		fun(Warning) ->
+			print_warning(FileName, Warning)
+		end,
+		FilteredWarnings).
+
+print_warning(FileName, {Line, _Mod, _Term} = Error) ->
+	Description = error_description(Error),
+	FixedLine = fix_line_number(Line),
+	print_warning(FileName, FixedLine, Description).
+
+print_warning(FileName, Line, Description) ->
+	io:format("~s:~p: warning: ~s~n", [FileName, Line, Description]).
