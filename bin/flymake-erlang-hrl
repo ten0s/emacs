@@ -49,7 +49,7 @@ main([FileName]) ->
 							print_warnings(FileName, Warnings),
 							error
 					end,
-					io:format("~p~n", [CompileResult]),
+					io:format("~p~n", [CompileResult]);
 				{error, Errors} ->
 					print_errors(FileName, Errors),
 					error
