@@ -16,11 +16,8 @@ main([FileName]) ->
 					% better to use rebar config first to look at dependency path
 					% if rebar config isn't found then the project the most
 					% probably is fairly simple and use wildcards.
-					ProjectEbins = deps_ebins("../.."),
-					DepsEbins = deps_ebins("../../../deps"),
-					%these below seems to work but a little slower.
-					%ProjectEbins = filelib:wildcard("../../*/ebin/"),
-					%DepsEbins = filelib:wildcard("../../../deps/*/ebin/"),
+					ProjectEbins = deps_ebins("../.."), % needed for custom behaviours
+					DepsEbins = deps_ebins("../../../deps"), % needed for parse_transform
 					code:add_paths(ProjectEbins ++ DepsEbins),
 					CompileResult = compile:file(NewFileName, [
 						strong_validation,
