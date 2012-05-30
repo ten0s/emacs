@@ -54,10 +54,9 @@
 ;;; erlang-mode
 ;;;----------------------------------------
 
-(setq erlang-root-dir "/usr/local/lib/erlang")
-(setq load-path (cons (car (file-expand-wildcards "/usr/local/lib/erlang/lib/tools-*/emacs")) load-path))
-(setq erlang-man-root-dir "/usr/local/lib/erlang/man")
-(setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
+;(setq erlang-root-dir (concat (getenv "ERL_ROOT") "/lib/erlang"))
+(setq erlang-root-dir "/opt/otp-r15b01/lib/erlang")
+(setq load-path (cons (car (file-expand-wildcards (concat erlang-root-dir "/lib/tools-*/emacs"))) load-path))
 (setq erlang-electric-commands nil)
 (require 'erlang-start)
 
