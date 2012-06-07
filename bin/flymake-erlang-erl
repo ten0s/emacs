@@ -2,27 +2,16 @@
 -export([main/1]).
 
 main([FileName]) ->
-	% better to use rebar config first to look at dependency path
-	% if rebar config isn't found then the project the most
-	% probably is fairly simple and use wildcards.
-	ProjectEbins = deps_ebins("../.."), % needed for custom behaviours
-	DepsEbins = deps_ebins("../../../deps"), % needed for parse_transform
-	code:add_paths(ProjectEbins ++ DepsEbins),
-	CompileResult = compile:file(FileName, [
-		strong_validation,
-		{warn_format, 2},
-		warn_export_all,
-		warn_export_vars,
-		warn_shadow_vars,
-		warn_obsolete_guard,
-		warn_unused_import,
-		warn_unused_function,
-		warn_unused_variable,
-		warn_deprecated_function,
-		warn_missing_spec,
-		return_errors,
-		return_warnings,
-		{i, "../include"}, {i, "../.."}, {i, "../../../deps"}]),
+	BaseDir = filename:join(filename:dirname(FileName), ".."),
+
+	DepsDirs = rebar_deps_dirs(BaseDir),
+	ErlcOpts = erlc_opts(BaseDir),
+
+	{_, EbinDirs} = lists:mapfoldr(fun(Dir, Acc) -> {0, filelib:wildcard(Dir ++ "/*/ebin") ++ Acc} end, [], DepsDirs),
+	IncludeDirs = lists:map(fun(Dir) -> {i, Dir} end, DepsDirs),
+
+	code:add_paths(EbinDirs),
+	CompileResult = compile:file(FileName, ErlcOpts ++ IncludeDirs),
 		case CompileResult of
 			{ok, _ModuleName} ->
 				ok;
@@ -51,14 +40,44 @@ fix_line_number(Line) -> Line.
 %%% Generic
 %%%
 
-deps_ebins(DepsDir) ->
-	case filelib:is_dir(DepsDir) of
-		false ->
-			[];
-		true ->
-			{ok, Dirs} = file:list_dir(DepsDir),
-			[Ebin || Dir <- Dirs, begin Ebin = DepsDir ++ "/" ++ Dir ++ "/ebin", filelib:is_dir(Ebin) end]
+rebar_deps_dirs(BaseDir) ->
+	case file:consult(filename:join(BaseDir, "rebar.config")) of
+		{ok, Terms} ->
+			OtpDirs = ["./include"],
+			LibDirs = proplists:get_value(lib_dirs, Terms, []),
+			DepsDir = proplists:get_value(deps_dir, Terms, "deps"),
+			UniqDirs = sets:to_list(sets:from_list(OtpDirs ++ DepsDir ++ LibDirs)),
+			lists:map(fun(Dir) -> filename:join(BaseDir, Dir) end, UniqDirs);
+		{error, _} ->
+            []
 	end.
+
+erlc_opts(_BaseDir) ->
+	[
+	% some will be by default
+	% some will go from rebar, anger, sinan, Emakefile options
+	% rebar.config: {erl_opts, [warn_untyped_record]}.
+	strong_validation,
+	{warn_format, 1},
+	warn_export_all,
+	warn_export_vars,
+	warn_shadow_vars,
+	warn_obsolete_guard,
+
+	warn_unused_import,
+	warn_unused_function,
+	warn_unused_variable,
+	warn_deprecated_function,
+	%warn_missing_spec, % ext opts ???
+
+	warn_unused_vars,
+	warn_unused_record,
+	warn_exported_vars,
+	%warn_untyped_record, % record `...' has field(s) without type information -> ext opts
+	warn_bif_clash,
+
+	return_errors,
+	return_warnings].
 
 %% the `file:format_error' returns the error description in the `line: description' format.
 %% here only the `description' is returned.
