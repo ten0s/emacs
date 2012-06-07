@@ -2,28 +2,30 @@
 -export([main/1]).
 
 main([FileName]) ->
-	BaseDir = filename:join(filename:dirname(FileName), ".."),
+	AbsFileName = filename:absname(FileName),
+	% erl-hrl share begin
+	BaseDir = filename:dirname(filename:dirname(AbsFileName)),
 
-	DepsDirs = rebar_deps_dirs(BaseDir),
+	DepsDirs = deps_dirs(BaseDir),
 	ErlcOpts = erlc_opts(BaseDir),
 
 	{_, EbinDirs} = lists:mapfoldr(fun(Dir, Acc) -> {0, filelib:wildcard(Dir ++ "/*/ebin") ++ Acc} end, [], DepsDirs),
 	IncludeDirs = lists:map(fun(Dir) -> {i, Dir} end, DepsDirs),
+	% erl-hrl share end
 
 	code:add_paths(EbinDirs),
-	CompileResult = compile:file(FileName, ErlcOpts ++ IncludeDirs),
-		case CompileResult of
-			{ok, _ModuleName} ->
-				ok;
-			{ok, _ModuleName, Warnings} ->
-				print_warnings(FileName, Warnings),
-				ok;
-			{error, Errors, Warnings} ->
-				print_errors(FileName, Errors),
-				print_warnings(FileName, Warnings),
-				error
-		end,
-		io:format("~p~n", [CompileResult]).
+	CompileResult = compile:file(AbsFileName, ErlcOpts ++ IncludeDirs),
+	case CompileResult of
+		{ok, _ModuleName} ->
+			ok;
+		{ok, _ModuleName, Warnings} ->
+			print_warnings(FileName, Warnings),
+			ok;
+		{error, Errors, Warnings} ->
+			print_errors(FileName, Errors),
+			print_warnings(FileName, Warnings),
+			error
+	end.%, io:format("~p~n", [CompileResult]).
 
 %%%
 %%% Specific
@@ -40,16 +42,50 @@ fix_line_number(Line) -> Line.
 %%% Generic
 %%%
 
+deps_dirs(BaseDir) ->
+	OtpStdDirs = absdirs(BaseDir, ["./include", "./deps"]),
+	DepsDirs =
+		case rebar_deps_dirs(BaseDir) of
+			{ok, RebarDepsDirs} ->
+				RebarDepsDirs;
+			{error, bad_format} ->
+				[]; % nothing to do. fix the config file. :(
+			{error, not_found} ->
+				% sinan, Emakefile, ...
+				[]
+		end,
+	UniqDirs = uniq(OtpStdDirs ++ DepsDirs),
+	lists:map(fun(Dir) -> filename:join(BaseDir, Dir) end, UniqDirs).
+
+rebar_deps_dirs("/") ->
+	{error, not_found};
 rebar_deps_dirs(BaseDir) ->
-	case file:consult(filename:join(BaseDir, "rebar.config")) of
-		{ok, Terms} ->
-			OtpDirs = ["./include"],
-			LibDirs = proplists:get_value(lib_dirs, Terms, []),
-			DepsDir = proplists:get_value(deps_dir, Terms, "deps"),
-			UniqDirs = sets:to_list(sets:from_list(OtpDirs ++ DepsDir ++ LibDirs)),
-			lists:map(fun(Dir) -> filename:join(BaseDir, Dir) end, UniqDirs);
-		{error, _} ->
-            []
+	RebarConfig = filename:join(BaseDir, "rebar.config"),
+	case filelib:is_file(RebarConfig) of
+		true ->
+			case file:consult(RebarConfig) of
+				{ok, Terms} ->
+					LibDirs = proplists:get_value(lib_dirs, Terms, []),
+					DepsDir = proplists:get_value(deps_dir, Terms, []),
+					case uniq(LibDirs ++ DepsDir) of
+						[] ->
+							%% recursively try to find config in parent directory.
+							case rebar_deps_dirs(filename:dirname(BaseDir)) of
+								{ok, Dirs} ->
+									{ok, Dirs};
+								{error, bad_format} ->
+									{error, bad_format};
+								{error, not_found} ->
+									{ok, []}
+							end;
+						Dirs ->
+							{ok, absdirs(BaseDir, Dirs)}
+					end;
+				{error, _} ->
+		            {error, bad_format}
+			end;
+		false ->
+			rebar_deps_dirs(filename:dirname(BaseDir))
 	end.
 
 erlc_opts(_BaseDir) ->
@@ -78,6 +114,12 @@ erlc_opts(_BaseDir) ->
 
 	return_errors,
 	return_warnings].
+
+uniq(List) ->
+	sets:to_list(sets:from_list(List)).
+
+absdirs(BaseDir, RelativeDirs) ->
+	lists:map(fun(Dir) -> filename:join(BaseDir, Dir) end, RelativeDirs).
 
 %% the `file:format_error' returns the error description in the `line: description' format.
 %% here only the `description' is returned.
