@@ -81,8 +81,7 @@ deps_dirs(BaseDir) ->
 				% sinan, Emakefile, ...
 				[]
 		end,
-	UniqDirs = uniq(OtpStdDirs ++ DepsDirs),
-	lists:map(fun(Dir) -> filename:join(BaseDir, Dir) end, UniqDirs).
+	uniq(OtpStdDirs ++ DepsDirs).
 
 rebar_deps_dirs("/") ->
 	{error, not_found};
@@ -94,7 +93,7 @@ rebar_deps_dirs(BaseDir) ->
 				{ok, Terms} ->
 					LibDirs = proplists:get_value(lib_dirs, Terms, []),
 					DepsDir = proplists:get_value(deps_dir, Terms, ["deps"]),
-					%% recursively try to find config in parent directory.
+					%% recursively try to find configs in parents directory.
 					case rebar_deps_dirs(filename:dirname(BaseDir)) of
 						{ok, ParentDirs} ->
 							{ok, absdirs(BaseDir, uniq(LibDirs ++ DepsDir ++ ParentDirs))};
