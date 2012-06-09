@@ -90,7 +90,7 @@
 
 ; add include directory to default compile path.
 (defvar erlang-compile-extra-opts
-  '(bin_opt_info debug_info (i . "../include") (i . "../../") (i . "../../../deps")))
+  '(bin_opt_info debug_info (i . "../include") (i . "../deps") (i . "../../") (i . "../../../deps")))
 
 ; define where put beam files.
 (setq erlang-compile-outdir "../ebin")
@@ -111,14 +111,8 @@
 					  (file-name-directory buffer-file-name))))
 	(list path (list local-file))))
 
-(defun flymake-erlang-erl ()
-  (flymake-compile-script-path "~/bin/flymake-erlang-erl"))
-
-(defun flymake-erlang-hrl ()
-  (flymake-compile-script-path "~/bin/flymake-erlang-hrl"))
-
-(defun flymake-erlang-terms ()
-  (flymake-compile-script-path "~/bin/flymake-erlang-terms"))
+(defun flymake-syntaxerl ()
+  (flymake-compile-script-path "~/bin/syntaxerl"))
 
 (add-hook 'erlang-mode-hook
   '(lambda()
@@ -126,13 +120,13 @@
 	 (local-set-key (kbd "C-c C-f n") 'flymake-goto-next-error) ; F3
 	 (local-set-key (kbd "C-c C-f p") 'flymake-goto-prev-error) ; M-F3
 
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-erl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-erlang-hrl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'" flymake-erlang-terms))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.app.src\\'" flymake-erlang-terms))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'" flymake-erlang-terms))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'" flymake-erlang-terms))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'" flymake-erlang-terms))
+	 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-syntaxerl))
+	 (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-syntaxerl))
+	 (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'" flymake-syntaxerl))
+	 (add-to-list 'flymake-allowed-file-name-masks '("\\.app.src\\'" flymake-syntaxerl))
+	 (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'" flymake-syntaxerl))
+	 (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'" flymake-syntaxerl))
+	 (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'" flymake-syntaxerl))
 
 	 ;; should be the last.
 	 (flymake-mode 1)
