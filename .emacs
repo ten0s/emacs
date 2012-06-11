@@ -116,6 +116,7 @@
 
 (add-hook 'erlang-mode-hook
   '(lambda()
+	 ; it's not actual any more due to flymake-cursor
 	 (local-set-key (kbd "C-c C-f d") 'flymake-display-err-menu-for-current-line) ; M-F1
 	 (local-set-key (kbd "C-c C-f n") 'flymake-goto-next-error) ; F3
 	 (local-set-key (kbd "C-c C-f p") 'flymake-goto-prev-error) ; M-F3
@@ -150,7 +151,7 @@ check on newline and when there are no changes)."
 ;;; http://www.cs.kent.ac.uk/projects/wrangler/Home.html
 ;;;----------------------------------------
 
-(add-to-list 'load-path "/usr/local/lib/erlang/lib/wrangler-1.0/elisp")
+(add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
 (require 'wrangler)
 
 (custom-set-variables
@@ -158,7 +159,7 @@ check on newline and when there are no changes)."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(wrangler-search-paths (quote ("/home/ten0s/Projects/wrangler"))))
+)
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
