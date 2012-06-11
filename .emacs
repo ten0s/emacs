@@ -165,7 +165,7 @@ check on newline and when there are no changes)."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- )
+)
 
 ;;;----------------------------------------
 ;;; scheme-mode
@@ -190,3 +190,41 @@ check on newline and when there are no changes)."
 
 (when window-system
   (global-set-key (kbd "C-x C-c") 'ask-before-closing))
+;;;----------------------------------------
+;;;
+;;;----------------------------------------
+
+(defun prettify-code ()
+  "Remove spaces between the text and parentheses,
+make sure there's a space between a semicolon and the
+text after it"
+  (interactive)
+  (setq pairs '(
+				("\\([{[(]\\)\\s-+\\([^ ]\\)" . "\\1\\2") ; [{(space+char -> [{(char
+				; unfortunately I can't make }]) work as above
+				("\\([^ ]\\)\\s-+}" . "\\1}") ; charspace+} -> char}
+				("\\([^ ]\\)\\s-+]" . "\\1]") ; charspace+] -> char]
+				("\\([^ ]\\)\\s-+)" . "\\1)") ; charspace+) -> char)
+				(",\\([^ ]\\)" . ", \\1") ; ,char -> ,spacechar
+				))
+  (mapcar '(lambda (pair)
+			 (let ((from (car pair))
+				   (to (cdr pair)))
+			   (beginning-of-buffer)
+			   (replace-regexp from to)))
+		  pairs)
+  (beginning-of-buffer))
+
+;(while (re-search-forward "\\([0-9]+\\)\\." nil t)
+;                        (replace-match "\\1,"))
+
+;;;----------------------------------------
+;;;
+;;;----------------------------------------
+
+(defun insert-caption (title)
+  (interactive "sTitle: ")
+  (insert "%% ===================================================================\n")
+  (insert (format "%%%% %s\n" title))
+  (insert "%% ===================================================================\n"))
+
