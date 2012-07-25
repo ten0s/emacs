@@ -1,9 +1,21 @@
-; disable scroll bar
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-; disable toolbar
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-; disable menu
-;(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+;;;----------------------------------------
+;;; scrollbar
+;;;----------------------------------------
+(set-scroll-bar-mode nil) ; nil | 'left | 'right
+
+;;;----------------------------------------
+;;; toolbar
+;;;----------------------------------------
+(tool-bar-mode -1) ; neg - disable | pos - enable
+
+;;;----------------------------------------
+;;; menubar
+;;;----------------------------------------
+(menu-bar-mode t) ; nil | t
+
+;;;----------------------------------------
+;;; various settings
+;;;----------------------------------------
 ; turn off splash screen
 (setq inhibit-splash-screen t)
 ; start with an empty buffer
@@ -11,19 +23,17 @@
 ;(delete-other-windows)
 (setq line-number-mode t)
 (setq column-number-mode t)
-;; Make all "yes or no" prompts show "y or n" instead
+; make all "yes or no" prompts show "y or n" instead
 (fset 'yes-or-no-p 'y-or-n-p)
-
+; after you press M-x, available completions are listed as you type.
+(icomplete-mode t)
 (setq show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
 (setq ediff-split-window-function 'split-window-horizontally)
-(setq delete-selection-mode t)
-
+(delete-selection-mode 1) ; neg - disable | pos - enable
 (setq make-backup-files nil)
 ; enable inter-program clipboard
 (setq x-select-enable-clipboard t)
-;
 (setq-default tab-width 4)
 ; set tab to be the tab
 (setq-default indent-tabs-mode t)
@@ -34,16 +44,9 @@
 (global-set-key "\M-n" 'scroll-up)
 (global-set-key "\C-xg" 'goto-line)
 (global-set-key "\C-xr" 'replace-string)
-
-(global-set-key (kbd "C-x <up>") 'windmove-up)
-(global-set-key (kbd "C-x <down>") 'windmove-down)
-(global-set-key (kbd "C-x <right>") 'windmove-right)
-(global-set-key (kbd "C-x <left>") 'windmove-left)
+(global-set-key "\C-x\C-g" 'find-grep)
 
 (setq compile-command "make")
-
-; cua-mode - cut,copy,paste
-; delete-selection-mode
 
 ;;;----------------------------------------
 ;;; extra packages path
@@ -70,8 +73,9 @@
 
 	 (imenu-add-to-menubar "Imenu")
 
-	 (local-set-key (kbd "C-c C-m m") 'erlang-man-module) ; M-F1
-	 (local-set-key (kbd "C-c C-m f") 'erlang-man-function))); M-F2
+	 (local-set-key "\C-cm" 'erlang-man-module)
+	 (local-set-key "'C-cf" 'erlang-man-function)
+))
 
 ; define name and cookie for internally loaded erlang shell.
 (setq inferior-erlang-machine-options
@@ -117,9 +121,9 @@
 (add-hook 'erlang-mode-hook
   '(lambda()
 	 ; it's not actual any more due to flymake-cursor
-	 (local-set-key (kbd "C-c C-f d") 'flymake-display-err-menu-for-current-line) ; M-F1
-	 (local-set-key (kbd "C-c C-f n") 'flymake-goto-next-error) ; F3
-	 (local-set-key (kbd "C-c C-f p") 'flymake-goto-prev-error) ; M-F3
+	 (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
+	 (local-set-key "\C-cn" 'flymake-goto-next-error)
+	 (local-set-key "\C-cp" 'flymake-goto-prev-error)
 
 	 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-syntaxerl))
 	 (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-syntaxerl))
@@ -145,6 +149,13 @@ check on newline and when there are no changes)."
   (setq flymake-start-syntax-check-on-newline nil))
 
 (erlang-flymake-only-on-save)
+
+;;;----------------------------------------
+;;; distel
+;;;----------------------------------------
+;(add-to-list 'load-path "~/.emacs.d/share/distel/elisp")
+;(require 'distel)
+;(distel-setup)
 
 ;;;----------------------------------------
 ;;; wrangler
@@ -178,6 +189,14 @@ check on newline and when there are no changes)."
 (setq default-directory "~/Projects")
 
 ;;;----------------------------------------
+;; plantuml-mode
+;;; https://github.com/zwz/plantuml-mode
+;;;----------------------------------------
+
+;(setq plantuml-jar-path "/opt/PlantUML/plantuml.jar")
+;(require 'plantuml-mode)
+
+;;;----------------------------------------
 ;;; ask before closing emacs
 ;;;----------------------------------------
 
@@ -189,7 +208,8 @@ check on newline and when there are no changes)."
       (message "Canceled exit")))
 
 (when window-system
-  (global-set-key (kbd "C-x C-c") 'ask-before-closing))
+  (global-set-key "\C-x\C-c" 'ask-before-closing))
+
 ;;;----------------------------------------
 ;;;
 ;;;----------------------------------------
@@ -213,7 +233,8 @@ text after it"
 			   (beginning-of-buffer)
 			   (replace-regexp from to)))
 		  pairs)
-  (beginning-of-buffer))
+  (beginning-of-buffer)
+  (keyboard-quit))
 
 ;(while (re-search-forward "\\([0-9]+\\)\\." nil t)
 ;                        (replace-match "\\1,"))
