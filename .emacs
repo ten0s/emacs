@@ -210,8 +210,7 @@ check on newline and when there are no changes)."
 	  (save-buffers-kill-emacs)
       (message "Canceled exit")))
 
-(when window-system
-  (global-set-key "\C-x\C-c" 'ask-before-closing))
+(global-set-key "\C-x\C-c" 'ask-before-closing)
 
 ;;;----------------------------------------
 ;;; backward kill line
