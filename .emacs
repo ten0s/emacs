@@ -214,6 +214,19 @@ check on newline and when there are no changes)."
   (global-set-key "\C-x\C-c" 'ask-before-closing))
 
 ;;;----------------------------------------
+;;; backward kill line
+;;;----------------------------------------
+
+;; define the function to kill the characters from the cursor
+;; to the beginning of the current line
+(defun backward-kill-line (arg)
+  "Kill the characters from the cursor to the beginning of the current line"
+  (interactive "p")
+  (kill-line 0))
+
+(global-set-key "\C-u" 'backward-kill-line)
+
+;;;----------------------------------------
 ;;;
 ;;;----------------------------------------
 
