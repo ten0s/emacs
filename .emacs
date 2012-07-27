@@ -40,8 +40,11 @@
 
 (global-set-key "\C-h" 'delete-backward-char)
 (global-set-key "\M-h" 'backward-kill-word)
-(global-set-key "\M-p" 'scroll-down)
-(global-set-key "\M-n" 'scroll-up)
+
+; these don't work in man pages, so disabled
+;(global-set-key "\M-p" 'scroll-down)
+;(global-set-key "\M-n" 'scroll-up)
+
 (global-set-key "\C-xg" 'goto-line)
 (global-set-key "\C-xr" 'replace-string)
 (global-set-key "\C-x\C-g" 'find-grep)
