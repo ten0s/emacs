@@ -46,7 +46,10 @@
 ;(global-set-key "\M-n" 'scroll-up)
 
 (global-set-key "\C-xg" 'goto-line)
+
 (global-set-key "\C-xr" 'replace-string)
+(global-set-key "\M-\C-xr" 'replace-regexp)
+
 (global-set-key "\C-x\C-g" 'find-grep)
 
 (setq compile-command "make")
