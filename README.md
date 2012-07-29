@@ -3,5 +3,5 @@ emacs
 
 Emacs configuration that sets up Erlang environment: erlang-mode, flymake, wrangler.
 
-Syntax checkers scripts in `bin` directory are deprecated in favor of https://github.com/ten0s/syntaxerl.
+Erlang syntax checker script is https://github.com/ten0s/syntaxerl.
 
