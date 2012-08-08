@@ -62,6 +62,16 @@
 (add-to-list 'load-path "~/.emacs.d/")
 
 ;;;----------------------------------------
+;;; dired mode
+;;;----------------------------------------
+(add-hook 'dired-mode-hook
+	'(lambda()
+	   ; C-c C-c (wdired-finish-edit)
+	   ; C-c ESC (wdired-abort_changes)
+	   (local-set-key "\C-c\C-q" 'wdired-change-to-wdired-mode)
+))
+
+;;;----------------------------------------
 ;;; erlang-mode
 ;;;----------------------------------------
 
