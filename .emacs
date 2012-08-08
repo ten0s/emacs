@@ -1,21 +1,6 @@
-;;;----------------------------------------
-;;; scrollbar
-;;;----------------------------------------
 (set-scroll-bar-mode nil) ; nil | 'left | 'right
-
-;;;----------------------------------------
-;;; toolbar
-;;;----------------------------------------
 (tool-bar-mode -1) ; neg - disable | pos - enable
-
-;;;----------------------------------------
-;;; menubar
-;;;----------------------------------------
 (menu-bar-mode t) ; nil | t
-
-;;;----------------------------------------
-;;; various settings
-;;;----------------------------------------
 ; turn off splash screen
 (setq inhibit-splash-screen t)
 ; start with an empty buffer
@@ -41,10 +26,6 @@
 (global-set-key "\C-h" 'delete-backward-char)
 (global-set-key "\M-h" 'backward-kill-word)
 
-; these don't work in man pages, so disabled
-;(global-set-key "\M-p" 'scroll-down)
-;(global-set-key "\M-n" 'scroll-up)
-
 (global-set-key "\C-xr" 'replace-string)
 (global-set-key "\M-\C-xr" 'replace-regexp)
 
@@ -59,11 +40,13 @@
 ;;;----------------------------------------
 ;;; extra packages path
 ;;;----------------------------------------
+
 (add-to-list 'load-path "~/.emacs.d/")
 
 ;;;----------------------------------------
 ;;; dired mode
 ;;;----------------------------------------
+
 (add-hook 'dired-mode-hook
 	'(lambda()
 	   ; C-c C-c (wdired-finish-edit)
@@ -171,6 +154,7 @@ check on newline and when there are no changes)."
 ;;;----------------------------------------
 ;;; distel
 ;;;----------------------------------------
+
 ;(add-to-list 'load-path "~/.emacs.d/share/distel/elisp")
 ;(require 'distel)
 ;(distel-setup)
