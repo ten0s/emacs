@@ -188,7 +188,7 @@ check on newline and when there are no changes)."
 (load-library "xscheme")
 
 ; sets emacs default directory. probably should be on of the latest command in .emacs
-(setq default-directory "~/Projects")
+(setq default-directory "~/projects")
 
 ;;;----------------------------------------
 ;; plantuml-mode
