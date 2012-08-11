@@ -164,8 +164,8 @@ check on newline and when there are no changes)."
 ;;; http://www.cs.kent.ac.uk/projects/wrangler/Home.html
 ;;;----------------------------------------
 
-(add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
-(require 'wrangler)
+;(add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
+;(require 'wrangler)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
