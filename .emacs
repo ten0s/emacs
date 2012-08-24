@@ -67,7 +67,7 @@
 
 (add-hook 'dired-mode-hook
 	'(lambda()
-	   ; C-c C-c (wdired-finish-edit)
+	   ; C-c C-c or C-x C-s (wdired-finish-edit)
 	   ; C-c ESC (wdired-abort_changes)
 	   (local-set-key "\C-c\C-q" 'wdired-change-to-wdired-mode)
 ))
@@ -182,8 +182,8 @@ check on newline and when there are no changes)."
 ;;; http://www.cs.kent.ac.uk/projects/wrangler/Home.html
 ;;;----------------------------------------
 
-;(add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
-;(require 'wrangler)
+(add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
+(require 'wrangler)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
