@@ -10,8 +10,6 @@
 (setq column-number-mode t)
 ; make all "yes or no" prompts show "y or n" instead
 (fset 'yes-or-no-p 'y-or-n-p)
-; after you press M-x, available completions are listed as you type.
-(icomplete-mode t)
 (setq show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -36,6 +34,26 @@
 ;;; make the new script executable after writing.
 (add-hook 'after-save-hook
   'executable-make-buffer-file-executable-if-script-p)
+
+;;;----------------------------------------
+;;; fast completion modes
+;;;----------------------------------------
+
+; after you press M-x, available completions are listed as you type.
+(icomplete-mode t)
+
+;; do not confirm a new file or buffer
+;(setq confirm-nonexistent-file-or-buffer nil)
+(require 'ido)
+(ido-mode 1)
+(ido-everywhere 1)
+(setq ido-enable-flex-matching t)
+(setq ido-create-new-buffer 'always)
+(setq ido-enable-tramp-completion nil)
+(setq ido-enable-last-directory-history nil)
+(setq ido-confirm-unique-completion nil) ;; wait for RET, even for unique?
+(setq ido-show-dot-for-dired t) ;; put . as the first item
+(setq ido-use-filename-at-point t) ;; prefer file names near point
 
 ;;;----------------------------------------
 ;;; extra packages path
