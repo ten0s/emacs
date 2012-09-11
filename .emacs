@@ -53,7 +53,7 @@
 (setq ido-enable-last-directory-history nil)
 (setq ido-confirm-unique-completion nil) ;; wait for RET, even for unique?
 (setq ido-show-dot-for-dired t) ;; put . as the first item
-(setq ido-use-filename-at-point t) ;; prefer file names near point
+;(setq ido-use-filename-at-point t) ;; prefer file names near point
 
 ;;;----------------------------------------
 ;;; extra packages path
