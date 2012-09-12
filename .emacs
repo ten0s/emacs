@@ -202,6 +202,8 @@ check on newline and when there are no changes)."
 ;;;----------------------------------------
 ;;; scheme-mode
 ;;; http://www.cs.rpi.edu/academics/courses/fall05/ai/scheme/starting.html
+;;; (currently used default xscheme.elc)
+;;; M-x run-scheme
 ;;;----------------------------------------
 
 (load-library "xscheme")
