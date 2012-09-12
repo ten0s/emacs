@@ -47,13 +47,14 @@
 (require 'ido)
 (ido-mode 1)
 (ido-everywhere 1)
-(setq ido-enable-flex-matching t)
+(setq ido-enable-flex-matching t) ; fuzzy matching is a must have
 (setq ido-create-new-buffer 'always)
 (setq ido-enable-tramp-completion nil)
 (setq ido-enable-last-directory-history nil)
+(setq ido-auto-merge-work-directories-length nil)
 (setq ido-confirm-unique-completion nil) ;; wait for RET, even for unique?
 (setq ido-show-dot-for-dired t) ;; put . as the first item
-;(setq ido-use-filename-at-point t) ;; prefer file names near point
+(setq ido-use-filename-at-point nil)
 
 ;;;----------------------------------------
 ;;; extra packages path
