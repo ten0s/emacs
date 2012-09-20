@@ -98,7 +98,7 @@
 	 (imenu-add-to-menubar "Imenu")
 
 	 (local-set-key "\C-cm" 'erlang-man-module)
- (local-set-key "\C-cf" 'erlang-man-function)
+	 (local-set-key "\C-cf" 'erlang-man-function)
 ))
 
 ; define name and cookie for internally loaded erlang shell.
