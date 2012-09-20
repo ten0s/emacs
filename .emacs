@@ -29,6 +29,10 @@
 
 (global-set-key "\C-x\C-g" 'find-grep)
 
+;;; disable suspend-frame combinations
+(global-set-key "\C-z" nil)
+(global-set-key "\C-x\C-z" nil)
+
 (setq compile-command "make")
 
 ;;; make the new script executable after writing.
