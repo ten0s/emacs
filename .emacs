@@ -188,7 +188,7 @@ check on newline and when there are no changes)."
 ;;;----------------------------------------
 
 (add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
-(require 'wrangler)
+;(require 'wrangler)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
