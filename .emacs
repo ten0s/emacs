@@ -47,7 +47,8 @@
 (icomplete-mode t)
 
 ;; do not confirm a new file or buffer
-;(setq confirm-nonexistent-file-or-buffer nil)
+(setq confirm-nonexistent-file-or-buffer nil)
+
 (require 'ido)
 (ido-mode 1)
 (ido-everywhere 1)
@@ -213,7 +214,7 @@ check on newline and when there are no changes)."
 (load-library "xscheme")
 
 ; sets emacs default directory. probably should be on of the latest command in .emacs
-(setq default-directory "~/projects")
+(setq default-directory "~/")
 
 ;;;----------------------------------------
 ;; plantuml-mode
