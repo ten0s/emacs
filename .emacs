@@ -105,7 +105,7 @@
 
 ; define name and cookie for internally loaded erlang shell.
 (setq inferior-erlang-machine-options
-	  '("-name" "emacs@127.0.0.1" "-setcookie" "emacs"))
+	  '("-name" "emacs@127.0.0.1" "-setcookie" "emacs" "-pa" "../ebin"))
 
 ; define auto erlang mode for these files/extensions.
 (add-to-list 'auto-mode-alist '(".*\\.app\\'" . erlang-mode))
