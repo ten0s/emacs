@@ -11,6 +11,7 @@
 ; make all "yes or no" prompts show "y or n" instead
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq show-trailing-whitespace t)
+(show-paren-mode t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq ediff-split-window-function 'split-window-horizontally)
 (delete-selection-mode 1) ; neg - disable | pos - enable
