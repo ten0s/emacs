@@ -12,6 +12,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq show-trailing-whitespace t)
 (show-paren-mode t)
+;(setq show-paren-style 'expression)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq ediff-split-window-function 'split-window-horizontally)
 (delete-selection-mode 1) ; neg - disable | pos - enable
@@ -120,7 +121,7 @@
 
 ; add include directory to default compile path.
 (defvar erlang-compile-extra-opts
-  '(bin_opt_info debug_info (i . "../include") (i . "../deps") (i . "../../") (i . "../../../deps")))
+  '(bin_opt_info debug_info (i . "../include") (i . "../deps") (i . "../deps/*/ebin") (i . "../../") (i . "../../../deps")))
 
 ; define where put beam files.
 (setq erlang-compile-outdir "../ebin")
@@ -189,21 +190,21 @@ check on newline and when there are no changes)."
 ;;; http://www.cs.kent.ac.uk/projects/wrangler/Home.html
 ;;;----------------------------------------
 
-(add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
-;(require 'wrangler)
+;; (add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
+;; (require 'wrangler)
 
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-)
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-)
+;; (custom-set-variables
+;;   ;; custom-set-variables was added by Custom.
+;;   ;; If you edit it by hand, you could mess it up, so be careful.
+;;   ;; Your init file should contain only one such instance.
+;;   ;; If there is more than one, they won't work right.
+;;  '(wrangler-search-paths (quote ("/home/ten0s/projects/temp/wr"))))
+;; (custom-set-faces
+;;   ;; custom-set-faces was added by Custom.
+;;   ;; If you edit it by hand, you could mess it up, so be careful.
+;;   ;; Your init file should contain only one such instance.
+;;   ;; If there is more than one, they won't work right.
+;;  )
 
 ;;;----------------------------------------
 ;;; scheme-mode
@@ -290,3 +291,4 @@ text after it"
   (insert (format "%%%% %s\n" title))
   (insert "%% ===================================================================\n"))
 
+(add-hook 'desktop-save-hook 'tramp-cleanup-all-buffers)
