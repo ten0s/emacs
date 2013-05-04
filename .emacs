@@ -120,7 +120,7 @@
 
 ; add include directory to default compile path.
 (defvar erlang-compile-extra-opts
-  '(bin_opt_info debug_info (i . "../include") (i . "../deps") (i . "../../") (i . "../../../deps")))
+  '(bin_opt_info debug_info (d . \'TEST\') (i . "../include") (i . "../deps") (i . "../../") (i . "../../../deps")))
 
 ; define where put beam files.
 (setq erlang-compile-outdir "../ebin")
