@@ -19,9 +19,9 @@
 (setq make-backup-files nil)
 ; enable inter-program clipboard
 (setq x-select-enable-clipboard t)
-(setq-default tab-width 4)
 ; set tab to be the tab
-(setq-default indent-tabs-mode t)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
 
 (global-set-key "\C-h" 'delete-backward-char)
 (global-set-key "\M-h" 'backward-kill-word)
@@ -95,13 +95,25 @@
 	 (setq tab-width 4)
 	 (setq tab-stop-list
 		'(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
-	 (setq indent-tabs-mode t)
+	 (setq indent-tabs-mode nil)
 	 (setq indent-line-function 'insert-tab)
 
 	 (imenu-add-to-menubar "Imenu")
 
 	 (local-set-key "\C-cm" 'erlang-man-module)
 	 (local-set-key "\C-cf" 'erlang-man-function)
+
+	 (if (not tags-table-list)
+		 (setq tags-table-list '("~/.emacs.d")))
+
+	 ; M-. find tag
+	 ; M-0 M-. find next tag
+	 ; C-u M-. find next tag
+	 ; M-* pop back
+	 ; M-x visit-tags-table
+	 ; M-x tags-search
+	 ; tags-file-name
+	 ; tags-table-list
 ))
 
 ; define name and cookie for internally loaded erlang shell.
@@ -114,6 +126,7 @@
 (add-to-list 'auto-mode-alist '(".*\\.config\\'" . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.rel\\'" . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.script\\'" . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.escript\\'" . erlang-mode))
 ;(add-to-list 'auto-mode-alist '(".*rebar\\.config\\'" . erlang-mode))
 ;(add-to-list 'auto-mode-alist '(".*reltool\\.config\\'" . erlang-mode))
 ;(add-to-list 'auto-mode-alist '(".*app\\.config\\'" . erlang-mode))
@@ -159,6 +172,7 @@
 	 (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'" flymake-syntaxerl))
 	 (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'" flymake-syntaxerl))
 	 (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.escript\\'" flymake-syntaxerl))
 
 	 ;; should be the last.
 	 (flymake-mode 1)
@@ -250,7 +264,7 @@ check on newline and when there are no changes)."
   (interactive "p")
   (kill-line 0))
 
-(global-set-key "\C-u" 'backward-kill-line)
+;(global-set-key "\C-u" 'backward-kill-line)
 
 ;;;----------------------------------------
 ;;;
