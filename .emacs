@@ -85,7 +85,7 @@
 ;;;----------------------------------------
 
 ;(setq erlang-root-dir (concat (getenv "ERL_ROOT") "/lib/erlang"))
-(setq erlang-root-dir "/opt/otp-r15b01/lib/erlang")
+(setq erlang-root-dir "/opt/otp-r16b03-1/lib/erlang")
 (setq load-path (cons (car (file-expand-wildcards (concat erlang-root-dir "/lib/tools-*/emacs"))) load-path))
 (setq erlang-electric-commands nil)
 (require 'erlang-start)
