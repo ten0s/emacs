@@ -84,8 +84,8 @@
 ;;; erlang-mode
 ;;;----------------------------------------
 
-;(setq erlang-root-dir (concat (getenv "ERL_ROOT") "/lib/erlang"))
-(setq erlang-root-dir "/opt/otp-r16b03-1/lib/erlang")
+;(setq erlang-root-dir (getenv "_KERL_ACTIVE_DIR"))
+(setq erlang-root-dir "/opt/r16b03-1")
 (setq load-path (cons (car (file-expand-wildcards (concat erlang-root-dir "/lib/tools-*/emacs"))) load-path))
 (setq erlang-electric-commands nil)
 (require 'erlang-start)
@@ -219,15 +219,6 @@ check on newline and when there are no changes)."
 ;;   ;; Your init file should contain only one such instance.
 ;;   ;; If there is more than one, they won't work right.
 ;;  )
-
-;;;----------------------------------------
-;;; scheme-mode
-;;; http://www.cs.rpi.edu/academics/courses/fall05/ai/scheme/starting.html
-;;; (currently used default xscheme.elc)
-;;; M-x run-scheme
-;;;----------------------------------------
-
-(load-library "xscheme")
 
 ; sets emacs default directory. probably should be on of the latest command in .emacs
 (setq default-directory "~/")
