@@ -192,44 +192,41 @@ check on newline and when there are no changes)."
 (erlang-flymake-only-on-save)
 
 ;;;----------------------------------------
-;;; distel
+;;; tuareg-mode
 ;;;----------------------------------------
 
-;(add-to-list 'load-path "~/.emacs.d/share/distel/elisp")
-;(require 'distel)
-;(distel-setup)
+;; -- common-lisp compatibility if not added earlier in your .emacs
+(require 'cl)
 
-;;;----------------------------------------
-;;; wrangler
-;;; http://www.cs.kent.ac.uk/projects/wrangler/Home.html
-;;;----------------------------------------
+;; -- Tuareg mode -----------------------------------------
+;; Add Tuareg to your search path
+(add-to-list
+ 'load-path
+ ;; Change the path below to be wherever you've put your tuareg installation.
+ (expand-file-name "~/lib/elisp/tuareg"))
+(require 'tuareg)
+(setq auto-mode-alist
+      (append '(("\\.ml[ily]?$" . tuareg-mode))
+          auto-mode-alist))
 
-;; (add-to-list 'load-path (concat erlang-root-dir "/lib/wrangler-1.0/elisp"))
-;; (require 'wrangler)
-
-;; (custom-set-variables
-;;   ;; custom-set-variables was added by Custom.
-;;   ;; If you edit it by hand, you could mess it up, so be careful.
-;;   ;; Your init file should contain only one such instance.
-;;   ;; If there is more than one, they won't work right.
-;;  '(wrangler-search-paths (quote ("/home/ten0s/projects/temp/wr"))))
-;; (custom-set-faces
-;;   ;; custom-set-faces was added by Custom.
-;;   ;; If you edit it by hand, you could mess it up, so be careful.
-;;   ;; Your init file should contain only one such instance.
-;;   ;; If there is more than one, they won't work right.
-;;  )
+;; -- opam and utop setup --------------------------------
+;; Setup environment variables using opam
+(dolist
+   (var (car (read-from-string
+           (shell-command-to-string "opam config env --sexp"))))
+ (setenv (car var) (cadr var)))
+;; Update the emacs path
+(setq exec-path (split-string (getenv "PATH") path-separator))
+;; Update the emacs load path
+(push (concat (getenv "OCAML_TOPLEVEL_PATH")
+          "/../../share/emacs/site-lisp") load-path)
+;; Automatically load utop.el
+(autoload 'utop "utop" "Toplevel for OCaml" t)
+(autoload 'utop-minor-mode "utop" "Minor mode for utop" t)
+(add-hook 'tuareg-mode-hook 'utop-minor-mode)
 
 ; sets emacs default directory. probably should be on of the latest command in .emacs
 (setq default-directory "~/")
-
-;;;----------------------------------------
-;; plantuml-mode
-;;; https://github.com/zwz/plantuml-mode
-;;;----------------------------------------
-
-;(setq plantuml-jar-path "/opt/PlantUML/plantuml.jar")
-;(require 'plantuml-mode)
 
 ;;;----------------------------------------
 ;;; ask before closing emacs
