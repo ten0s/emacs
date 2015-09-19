@@ -74,10 +74,10 @@
 ;;;----------------------------------------
 
 (add-hook 'dired-mode-hook
-	'(lambda()
-	   ; C-c C-c or C-x C-s (wdired-finish-edit)
-	   ; C-c ESC (wdired-abort_changes)
-	   (local-set-key "\C-c\C-q" 'wdired-change-to-wdired-mode)
+    '(lambda()
+       ; C-c C-c or C-x C-s (wdired-finish-edit)
+       ; C-c ESC (wdired-abort_changes)
+       (local-set-key "\C-c\C-q" 'wdired-change-to-wdired-mode)
 ))
 
 ;;;----------------------------------------
@@ -92,33 +92,33 @@
 
 (add-hook 'erlang-mode-hook
   '(lambda()
-	 (setq tab-width 4)
-	 (setq tab-stop-list
-		'(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
-	 (setq indent-tabs-mode nil)
-	 (setq indent-line-function 'insert-tab)
+     (setq tab-width 4)
+     (setq tab-stop-list
+        '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
+     (setq indent-tabs-mode nil)
+     (setq indent-line-function 'insert-tab)
 
-	 (imenu-add-to-menubar "Imenu")
+     (imenu-add-to-menubar "Imenu")
 
-	 (local-set-key "\C-cm" 'erlang-man-module)
-	 (local-set-key "\C-cf" 'erlang-man-function)
+     (local-set-key "\C-cm" 'erlang-man-module)
+     (local-set-key "\C-cf" 'erlang-man-function)
 
-	 (if (not tags-table-list)
-		 (setq tags-table-list '("~/.emacs.d")))
+     (if (not tags-table-list)
+         (setq tags-table-list '("~/.emacs.d")))
 
-	 ; M-. find tag
-	 ; M-0 M-. find next tag
-	 ; C-u M-. find next tag
-	 ; M-* pop back
-	 ; M-x visit-tags-table
-	 ; M-x tags-search
-	 ; tags-file-name
-	 ; tags-table-list
+     ; M-. find tag
+     ; M-0 M-. find next tag
+     ; C-u M-. find next tag
+     ; M-* pop back
+     ; M-x visit-tags-table
+     ; M-x tags-search
+     ; tags-file-name
+     ; tags-table-list
 ))
 
 ; define name and cookie for internally loaded erlang shell.
 (setq inferior-erlang-machine-options
-	  '("-name" "emacs@127.0.0.1" "-setcookie" "emacs" "-pa" "../ebin"))
+      '("-name" "emacs@127.0.0.1" "-setcookie" "emacs" "-pa" "../ebin"))
 
 ; define auto erlang mode for these files/extensions.
 (add-to-list 'auto-mode-alist '(".*\\.app\\'" . erlang-mode))
@@ -127,10 +127,8 @@
 (add-to-list 'auto-mode-alist '(".*\\.rel\\'" . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.script\\'" . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.escript\\'" . erlang-mode))
-;(add-to-list 'auto-mode-alist '(".*rebar\\.config\\'" . erlang-mode))
-;(add-to-list 'auto-mode-alist '(".*reltool\\.config\\'" . erlang-mode))
-;(add-to-list 'auto-mode-alist '(".*app\\.config\\'" . erlang-mode))
-;(add-to-list 'auto-mode-alist '(".*sys\\.config\\'" . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.xrl\\'" . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.yrl\\'" . erlang-mode))
 
 ; add include directory to default compile path.
 (defvar erlang-compile-extra-opts
@@ -149,33 +147,35 @@
 
 (defun flymake-compile-script-path (path)
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-					 'flymake-create-temp-inplace))
-		 (local-file (file-relative-name
-					  temp-file
-					  (file-name-directory buffer-file-name))))
-	(list path (list local-file))))
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list path (list local-file))))
 
 (defun flymake-syntaxerl ()
   (flymake-compile-script-path "~/bin/syntaxerl"))
 
 (add-hook 'erlang-mode-hook
   '(lambda()
-	 ; it's not actual any more due to flymake-cursor
-	 (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
-	 (local-set-key "\C-cn" 'flymake-goto-next-error)
-	 (local-set-key "\C-cp" 'flymake-goto-prev-error)
+     ; it's not actual any more due to flymake-cursor
+     (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
+     (local-set-key "\C-cn" 'flymake-goto-next-error)
+     (local-set-key "\C-cp" 'flymake-goto-prev-error)
 
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-syntaxerl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-syntaxerl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'" flymake-syntaxerl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.app.src\\'" flymake-syntaxerl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'" flymake-syntaxerl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'" flymake-syntaxerl))
-	 (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.app.src\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'" flymake-syntaxerl))
      (add-to-list 'flymake-allowed-file-name-masks '("\\.escript\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.xrl\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.yrl\\'" flymake-syntaxerl))
 
-	 ;; should be the last.
-	 (flymake-mode 1)
+     ;; should be the last.
+     (flymake-mode 1)
 ))
 
 ; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl
@@ -239,7 +239,7 @@ check on newline and when there are no changes)."
   "Ask whether or not to close, and then close if y was pressed"
   (interactive)
   (if (y-or-n-p (format "Are you sure you want to exit Emacs? "))
-	  (save-buffers-kill-emacs)
+      (save-buffers-kill-emacs)
       (message "Canceled exit")))
 
 (global-set-key "\C-x\C-c" 'ask-before-closing)
@@ -267,19 +267,19 @@ make sure there's a space between a semicolon and the
 text after it"
   (interactive)
   (setq pairs '(
-				("\\([{[(]\\)\\s-+\\([^ ]\\)" . "\\1\\2") ; [{(space+char -> [{(char
-				; unfortunately I can't make }]) work as above
-				("\\([^ ]\\)\\s-+}" . "\\1}") ; charspace+} -> char}
-				("\\([^ ]\\)\\s-+]" . "\\1]") ; charspace+] -> char]
-				("\\([^ ]\\)\\s-+)" . "\\1)") ; charspace+) -> char)
-				(",\\([^ ]\\)" . ", \\1") ; ,char -> ,spacechar
-				))
+                ("\\([{[(]\\)\\s-+\\([^ ]\\)" . "\\1\\2") ; [{(space+char -> [{(char
+                ; unfortunately I can't make }]) work as above
+                ("\\([^ ]\\)\\s-+}" . "\\1}") ; charspace+} -> char}
+                ("\\([^ ]\\)\\s-+]" . "\\1]") ; charspace+] -> char]
+                ("\\([^ ]\\)\\s-+)" . "\\1)") ; charspace+) -> char)
+                (",\\([^ ]\\)" . ", \\1") ; ,char -> ,spacechar
+                ))
   (mapcar '(lambda (pair)
-			 (let ((from (car pair))
-				   (to (cdr pair)))
-			   (beginning-of-buffer)
-			   (replace-regexp from to)))
-		  pairs)
+             (let ((from (car pair))
+                   (to (cdr pair)))
+               (beginning-of-buffer)
+               (replace-regexp from to)))
+          pairs)
   (beginning-of-buffer)
   (keyboard-quit))
 
