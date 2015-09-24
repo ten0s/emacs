@@ -67,7 +67,7 @@
 ;;; extra packages path
 ;;;----------------------------------------
 
-(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/emacs/.emacs.d/")
 
 ;;;----------------------------------------
 ;;; dired mode
