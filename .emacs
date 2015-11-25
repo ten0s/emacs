@@ -121,14 +121,15 @@
       '("-name" "emacs@127.0.0.1" "-setcookie" "emacs" "-pa" "../ebin"))
 
 ; define auto erlang mode for these files/extensions.
-(add-to-list 'auto-mode-alist '(".*\\.app\\'" . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*app\\.src\\'" . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.config\\'" . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.rel\\'" . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.script\\'" . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.app\\'"     . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*app\\.src\\'"  . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.config\\'"  . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.rel\\'"     . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.script\\'"  . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.escript\\'" . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.xrl\\'" . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.yrl\\'" . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.es\\'"      . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.xrl\\'"     . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.yrl\\'"     . erlang-mode))
 
 ; add include directory to default compile path.
 (defvar erlang-compile-extra-opts
@@ -163,16 +164,17 @@
      (local-set-key "\C-cn" 'flymake-goto-next-error)
      (local-set-key "\C-cp" 'flymake-goto-prev-error)
 
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-syntaxerl))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-syntaxerl))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'"     flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'"     flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.xrl\\'"     flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.yrl\\'"     flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'"     flymake-syntaxerl))
      (add-to-list 'flymake-allowed-file-name-masks '("\\.app.src\\'" flymake-syntaxerl))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'" flymake-syntaxerl))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'" flymake-syntaxerl))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'"  flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'"     flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'"  flymake-syntaxerl))
      (add-to-list 'flymake-allowed-file-name-masks '("\\.escript\\'" flymake-syntaxerl))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.xrl\\'" flymake-syntaxerl))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.yrl\\'" flymake-syntaxerl))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.es\\'"      flymake-syntaxerl))
 
      ;; should be the last.
      (flymake-mode 1)
