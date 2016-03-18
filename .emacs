@@ -35,6 +35,9 @@
 (global-set-key "\C-z" nil)
 (global-set-key "\C-x\C-z" nil)
 
+; check out 'bury-buffer
+(global-set-key (kbd "<C-tab>") 'other-window)
+
 (setq compile-command "make")
 
 ;;; make the new script executable after writing.
