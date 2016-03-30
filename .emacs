@@ -241,6 +241,7 @@ check on newline and when there are no changes)."
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.gv\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.dtl\\'" . web-mode))
 (defun my-web-mode-hook ()
   "Hooks for Web mode."
   (setq web-mode-markup-indent-offset 2)
