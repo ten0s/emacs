@@ -162,7 +162,6 @@
 
 (add-hook 'erlang-mode-hook
   '(lambda()
-     ; it's not actual any more due to flymake-cursor
      (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
      (local-set-key "\C-cn" 'flymake-goto-next-error)
      (local-set-key "\C-cp" 'flymake-goto-prev-error)
@@ -184,7 +183,15 @@
 ))
 
 (require 'flymake-jslint)
-(add-hook 'js-mode-hook 'flymake-jslint-load)
+(setq flymake-jslint-args ())
+(add-hook 'js-mode-hook
+  '(lambda()
+     (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
+     (local-set-key "\C-cn" 'flymake-goto-next-error)
+     (local-set-key "\C-cp" 'flymake-goto-prev-error)
+
+     (flymake-jslint-load)
+))
 
 ; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl
 (defun flymake-only-on-save ()
