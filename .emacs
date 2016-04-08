@@ -183,8 +183,11 @@
      (flymake-mode 1)
 ))
 
+(require 'flymake-jslint)
+(add-hook 'js-mode-hook 'flymake-jslint-load)
+
 ; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl
-(defun erlang-flymake-only-on-save ()
+(defun flymake-only-on-save ()
   "Trigger flymake only when the buffer is saved (disables syntax
 check on newline and when there are no changes)."
   (interactive)
@@ -194,7 +197,7 @@ check on newline and when there are no changes)."
   (setq flymake-no-changes-timeout most-positive-fixnum)
   (setq flymake-start-syntax-check-on-newline nil))
 
-(erlang-flymake-only-on-save)
+(flymake-only-on-save)
 
 ;;;----------------------------------------
 ;;; tuareg-mode
