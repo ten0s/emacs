@@ -274,6 +274,12 @@ check on newline and when there are no changes)."
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
 ;;;----------------------------------------
+;;; cc-mode
+;;;----------------------------------------
+(setq c-default-style "linux")
+(setq c-basic-offset 4)
+
+;;;----------------------------------------
 ;;; ask before closing emacs
 ;;;----------------------------------------
 
