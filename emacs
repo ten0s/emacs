@@ -73,6 +73,13 @@
 (add-to-list 'load-path "~/emacs/emacs.d/")
 
 ;;;----------------------------------------
+;;; emacs-lisp-mode
+;;;----------------------------------------
+
+(add-to-list 'auto-mode-alist '("emacs"  . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '(".emacs" . emacs-lisp-mode))
+
+;;;----------------------------------------
 ;;; dired mode
 ;;;----------------------------------------
 
