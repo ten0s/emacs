@@ -208,6 +208,21 @@
      (flymake-jslint-load)
 ))
 
+(defun flymake-shellcheck ()
+  (flymake-compile-script-path "~/.cabal/bin/shellcheck"))
+
+(add-hook 'sh-mode-hook
+  '(lambda ()
+     (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
+     (local-set-key "\C-cn" 'flymake-goto-next-error)
+     (local-set-key "\C-cp" 'flymake-goto-prev-error)
+
+     (add-to-list 'flymake-allowed-file-name-masks '("\\.sh\\'" flymake-shellcheck))
+
+     ;; should be the last.
+     (flymake-mode 1)
+))
+
 ; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl
 (defun flymake-only-on-save ()
   "Trigger flymake only when the buffer is saved (disables syntax
