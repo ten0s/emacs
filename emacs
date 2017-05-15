@@ -176,7 +176,7 @@
   (flymake-compile-script-path "~/bin/syntaxerl"))
 
 (add-hook 'erlang-mode-hook
-  '(lambda()
+  '(lambda ()
      (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
      (local-set-key "\C-cn" 'flymake-goto-next-error)
      (local-set-key "\C-cp" 'flymake-goto-prev-error)
