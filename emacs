@@ -218,6 +218,7 @@
      (local-set-key "\C-cp" 'flymake-goto-prev-error)
 
      (add-to-list 'flymake-allowed-file-name-masks '("\\.sh\\'" flymake-shellcheck))
+     (add-to-list 'flymake-allowed-file-name-masks '("\\'" flymake-shellcheck))
 
      ;; should be the last.
      (flymake-mode 1)
