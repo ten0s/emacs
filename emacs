@@ -217,8 +217,12 @@
      (local-set-key "\C-cn" 'flymake-goto-next-error)
      (local-set-key "\C-cp" 'flymake-goto-prev-error)
 
-     (add-to-list 'flymake-allowed-file-name-masks '("\\.sh\\'" flymake-shellcheck))
-     (add-to-list 'flymake-allowed-file-name-masks '("\\'" flymake-shellcheck))
+     ;; https://www.emacswiki.org/emacs/AutoModeAlist
+     ;; Note that \' matches the end of a string, where as $ matches the empty string before a newline.
+     ;; Thus, $ may lead to unexpected behavior when dealing with filenames containing newlines.
+
+     ;; If \\' is used instead of $ this hook is applied to erlang-mode :\
+     (add-to-list 'flymake-allowed-file-name-masks '(".+$" flymake-shellcheck))
 
      ;; should be the last.
      (flymake-mode 1)
