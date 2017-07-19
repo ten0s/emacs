@@ -41,8 +41,8 @@
 (setq compile-command "make")
 
 ;;; make the new script executable after writing.
-(add-hook 'after-save-hook
-  'executable-make-buffer-file-executable-if-script-p)
+;(add-hook 'after-save-hook
+;  'executable-make-buffer-file-executable-if-script-p)
 
 ;;;----------------------------------------
 ;;; fast completion modes
