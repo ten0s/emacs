@@ -209,7 +209,7 @@
 ))
 
 (defun flymake-shellcheck ()
-  (flymake-compile-script-path "~/.cabal/bin/shellcheck"))
+  (flymake-compile-script-path "~/.local/bin/shellcheck"))
 
 (add-hook 'sh-mode-hook
   '(lambda ()
