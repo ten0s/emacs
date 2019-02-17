@@ -70,7 +70,7 @@
 ;;; extra packages path
 ;;;----------------------------------------
 
-(add-to-list 'load-path "~/emacs/emacs.d/")
+(add-to-list 'load-path "~/emacs/lib/elisp/")
 
 ;;;----------------------------------------
 ;;; emacs-lisp-mode
@@ -276,6 +276,31 @@ check on newline and when there are no changes)."
 ;;;----------------------------------------
 (setq c-default-style "linux")
 (setq c-basic-offset 4)
+
+;;;----------------------------------------
+;;; org mode
+;;;----------------------------------------
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   (sh . t)
+   (python . t)
+   (dot . t)
+   (ditaa . t)
+   (plantuml . t)
+))
+
+(setq org-startup-with-inline-images t)
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+
+; (setq org-confirm-babel-evaluate nil)
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (member lang '("dot" "ditaa" "plantuml")))) ; don't ask for...
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+(setq org-ditaa-jar-path    (expand-file-name "~/emacs/lib/java/ditaa-0.11.0-standalone.jar"))
+(setq org-plantuml-jar-path (expand-file-name "~/emacs/lib/java/plantuml.1.2019.1.jar"))
 
 ;;;----------------------------------------
 ;;; ask before closing emacs
