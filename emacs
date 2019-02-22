@@ -284,15 +284,19 @@ check on newline and when there are no changes)."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '(
-   (sh . t)
-   (python . t)
-   (dot . t)
    (ditaa . t)
+   (dot . t)
+   (java . t)
    (plantuml . t)
+   (python . t)
+   (sh . t)
 ))
 
 (setq org-startup-with-inline-images t)
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+
+; execute code block outside org-mode. better to put in specific modes
+(global-set-key (kbd "<f5>") 'org-babel-execute-src-block-maybe)
 
 ; (setq org-confirm-babel-evaluate nil)
 (defun my-org-confirm-babel-evaluate (lang body)
