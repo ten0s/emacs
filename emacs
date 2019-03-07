@@ -287,6 +287,7 @@ check on newline and when there are no changes)."
    (ditaa . t)
    (dot . t)
    (java . t)
+   (mscgen . t)
    (plantuml . t)
    (python . t)
    (sh . t)
@@ -300,7 +301,7 @@ check on newline and when there are no changes)."
 
 ; (setq org-confirm-babel-evaluate nil)
 (defun my-org-confirm-babel-evaluate (lang body)
-  (not (member lang '("dot" "ditaa" "plantuml")))) ; don't ask for...
+  (not (member lang '("ditaa" "ditaa" "mscgen" "plantuml")))) ; don't ask for...
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 (setq org-ditaa-jar-path    (expand-file-name "~/emacs/lib/java/ditaa-0.11.0-standalone.jar"))
