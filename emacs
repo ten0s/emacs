@@ -294,6 +294,7 @@ check on newline and when there are no changes)."
 ))
 
 (setq org-startup-with-inline-images t)
+(setq org-src-fontify-natively t)
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 
 ; execute code block outside org-mode. better to put in specific modes
