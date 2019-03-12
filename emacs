@@ -92,7 +92,7 @@
 ;;;----------------------------------------
 
 (add-hook 'dired-mode-hook
-    '(lambda()
+    '(lambda ()
        ; C-c C-c or C-x C-s (wdired-finish-edit)
        ; C-c ESC (wdired-abort_changes)
        (local-set-key "\C-c\C-q" 'wdired-change-to-wdired-mode)
@@ -109,7 +109,7 @@
 (require 'erlang-start)
 
 (add-hook 'erlang-mode-hook
-  '(lambda()
+  '(lambda ()
      (setq tab-width 4)
      (setq tab-stop-list
         '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
@@ -200,7 +200,7 @@
 (require 'flymake-jslint)
 (setq flymake-jslint-args ())
 (add-hook 'js-mode-hook
-  '(lambda()
+  '(lambda ()
      (local-set-key "\C-cd" 'flymake-display-err-menu-for-current-line)
      (local-set-key "\C-cn" 'flymake-goto-next-error)
      (local-set-key "\C-cp" 'flymake-goto-prev-error)
@@ -299,6 +299,13 @@ check on newline and when there are no changes)."
 
 ; execute code block outside org-mode. better to put in specific modes
 (global-set-key (kbd "<f5>") 'org-babel-execute-src-block-maybe)
+(global-set-key (kbd "<M-f5>") 'org-babel-execute-buffer)
+(global-set-key (kbd "<ESC> <M-f5>")
+                '(lambda ()
+                   (interactive)
+                   (setq org-confirm-babel-evaluate nil)
+                   (org-babel-execute-buffer)
+                   (setq org-confirm-babel-evaluate t)))
 
 ; (setq org-confirm-babel-evaluate nil)
 (defun my-org-confirm-babel-evaluate (lang body)
