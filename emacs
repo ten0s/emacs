@@ -103,7 +103,7 @@
 ;;;----------------------------------------
 
 ;(setq erlang-root-dir (getenv "_KERL_ACTIVE_DIR"))
-(setq erlang-root-dir "/opt/r19.3")
+(setq erlang-root-dir "/opt/r20.3")
 (setq load-path (cons (car (file-expand-wildcards (concat erlang-root-dir "/lib/tools-*/emacs"))) load-path))
 (setq erlang-electric-commands nil)
 (require 'erlang-start)
